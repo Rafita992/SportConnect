@@ -11,10 +11,10 @@ import com.example.sportconnect.service.UserService;
 public class LoginController {
 
     @FXML
-    private TextField txtEmail;
+    private TextField textEmail;
 
     @FXML
-    private PasswordField txtPassword;
+    private PasswordField textPassword;
 
     @FXML
     private Label lblMessage;
@@ -24,8 +24,8 @@ public class LoginController {
 
     @FXML
     private void handleLogin(ActionEvent event) {
-        String email = txtEmail.getText().trim();
-        String password = txtPassword.getText().trim();
+        String email = textEmail.getText().trim();
+        String password = textPassword.getText().trim();
 
         // 1. Validación básica de UI
         if (email.isEmpty() || password.isEmpty()) {

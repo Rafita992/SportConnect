@@ -1,0 +1,75 @@
+/* El fondo de la ventana con un gradiente oscuro */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e);
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* El contenedor principal */
+.main-container {
+    -fx-padding: 40;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+/* Estilo para el título SPORTCONNECT */
+.title-label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00d2ff; /* Azul cian brillante */
+    -fx-effect: dropshadow(gaussian, rgba(0, 210, 255, 0.4), 10, 0.5, 0, 0);
+}
+
+/* Subtítulo */
+.subtitle-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #95a5a6;
+}
+
+/* Etiquetas de los campos (Correo, Contraseña) */
+.input-label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: bold;
+}
+
+/* Campos de texto oscuros con bordes sutiles */
+.text-input {
+    -fx-background-color: #0f3460;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #536171;
+    -fx-border-color: #16213e;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+/* Al hacer click en el campo para escribir */
+.text-input:focused {
+    -fx-border-color: #00d2ff;
+    -fx-background-color: #162447;
+    -fx-border-width: 1.5;
+}
+
+/* El botón de entrar con gradiente */
+.login-button {
+    -fx-background-color: linear-gradient(to right, #00d2ff, #3a7bd5);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 30;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-transition: 0.3s;
+}
+
+/* Efecto hover del botón */
+.login-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 210, 255, 0.6), 15, 0, 0, 0);
+    -fx-background-color: linear-gradient(to right, #3a7bd5, #00d2ff);
+}
+
+/* Mensaje de error */
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+}

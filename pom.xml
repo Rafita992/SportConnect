@@ -27,7 +27,6 @@
             <artifactId>javafx-fxml</artifactId>
             <version>21</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -38,13 +37,11 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.4.1</version>
         </dependency>
-
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
@@ -55,7 +52,6 @@
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.9</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -72,7 +68,7 @@
                     <include>**/*.fxml</include>
                     <include>**/*.xml</include>
                     <include>**/*.properties</include>
-                </includes>
+                    <include>**/*.css</include> </includes>
             </resource>
         </resources>
 
@@ -86,7 +82,6 @@
                     <target>21</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -95,7 +90,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.sportconnect.HelloApplication</mainClass>
+                            <mainClass>org.example.sportconnect/com.example.sportconnect.HelloApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

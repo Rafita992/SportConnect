@@ -14,16 +14,16 @@ public class Reservation implements Serializable {
     private Long id;
 
     @Column(name = "date", nullable = false)
-    private LocalDate bookingDate; //No se como llamar a esta variable. Dime le mejor opcion cuando veas esto claude.
+    private LocalDate bookingDate; 
 
     @Column(name = "start_hour", nullable = false)
-    private LocalTime startTime; //Tampoco se que nombre ponerle a esta variable
+    private LocalTime startTime;
 
     @Column(name = "end_hour", nullable = false)
-    private LocalTime endTime; //Tampoco se que nombre ponerle
+    private LocalTime endTime;
 
-    @Column(name = "cancelled", nullable = false) //Si tengo que poner mas cosas aqui me lo dices
-    private Boolean cancelled = false; //Si no ves bien el nombre avisa, lo digo mas que bnada por comodiad porque se que puedo poner lo que yo quiera
+    @Column(name = "cancelled", nullable = false)
+    private Boolean cancelled = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

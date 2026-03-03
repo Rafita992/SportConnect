@@ -8,9 +8,5 @@ import org.hibernate.query.Query;
 
 
 public class SportDAO {
-    public getAllSports(){
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            Query<Sport> query = session.createQuery("FROM Sport WHERE nombre = nombre", Sport.class);
-        }
-    }
+
 }

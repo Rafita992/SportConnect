@@ -3,29 +3,27 @@ package com.example.sportconnect.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
-@Table(name = "courts")
-
-public class Court implements Serializable {
+@Table(name = "sports")
+public class Sport implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 20)
     private String nombre;
 
-    @ManyToOne
-    @JoinColumn(name = "sport_id", nullable = false)
-    private Sport sport;
+    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Court> courts;
 
-    public Court(){
+    public Sport(){
 
     }
 
-    public Court(String nombre, Sport sport) {
+    public Sport(String nombre) {
         this.nombre = nombre;
-        this.sport = sport;
     }
 
     public Long getId() {
@@ -38,13 +36,5 @@ public class Court implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public Sport getSport() {
-        return sport;
-    }
-
-    public void setSport(Sport sport) {
-        this.sport = sport;
     }
 }

@@ -3,6 +3,8 @@ package com.example.sportconnect.service;
 import com.example.sportconnect.dao.UserDAO;
 import com.example.sportconnect.model.User;
 
+import java.util.List;
+
 public class UserService {
 
     // Instanciamos el DAO para tener acceso a la base de datos
@@ -38,5 +40,13 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public void deleteUser(User user) {
+        userDAO.deleteUser(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.getAllUsers();
     }
 }

@@ -49,6 +49,27 @@ public class ReservationDAO {
         }
     }
 
+    public List<Reservation> getReservationsByUser(User user) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Reservation> query = session.createQuery(
+                    "FROM Reservation WHERE user = :user", Reservation.class);
+            query.setParameter("user", user);
+            return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public Reservation getReservationById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Reservation.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
 
 

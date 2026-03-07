@@ -17,5 +17,9 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <mapping class="com.example.sportconnect.model.User"/>
+        <mapping class="com.example.sportconnect.model.Reservation"/>
+        <mapping class="com.example.sportconnect.model.Court"/>
+        <mapping class="com.example.sportconnect.model.Sport"/>
+
     </session-factory>
 </hibernate-configuration>

@@ -34,6 +34,10 @@ public class Sport implements Serializable {
         return nombre;
     }
 
+    public List<Court> getCourts() {
+        return courts;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

@@ -2,9 +2,14 @@ package com.example.sportconnect.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import com.example.sportconnect.model.User;
 import com.example.sportconnect.service.UserService;
 
@@ -19,7 +24,9 @@ public class LoginController {
     @FXML
     private Label lblMessage;
 
-    // Instanciamos el servicio (en proyectos más grandes usarías Inyección de Dependencias)
+    @FXML
+    private Button btnLogin;
+
     private final UserService userService = new UserService();
 
     @FXML
@@ -27,41 +34,56 @@ public class LoginController {
         String email = textEmail.getText().trim();
         String password = textPassword.getText().trim();
 
-        // 1. Validación básica de UI
         if (email.isEmpty() || password.isEmpty()) {
             showError("Por favor, rellena todos los campos.");
             return;
         }
 
         try {
-            // 2. Llamada al Service (Lógica de negocio)
             User user = userService.login(email, password);
 
             if (user != null) {
-                showSuccess("¡Bienvenido, " + user.getName() + "!");
-
-                // 3. Aquí llamarías a un método para cambiar de ventana
-                // navigateToDashboard(user);
-
+                if (user.getIsAdmin()) {
+                    navigateToDashboard(user);
+                } else {
+                    // TODO: navegar a vista de usuario normal
+                    showSuccess("¡Bienvenido, " + user.getName() + "!");
+                }
             } else {
                 showError("Correo o contraseña incorrectos.");
             }
 
         } catch (Exception e) {
-            // Gestión de errores de conexión o base de datos
             showError("Error técnico: No se pudo conectar con el servidor.");
             e.printStackTrace();
         }
     }
 
-    // Métodos auxiliares para limpiar el código del controlador
+    private void navigateToDashboard(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/sportconnect/fxml/dashboard-view.fxml"));
+            Parent root = loader.load();
+
+            DashboardController controller = loader.getController();
+            controller.initData(user);
+
+            Stage stage = (Stage) btnLogin.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Error al cargar el dashboard.");
+        }
+    }
+
     private void showError(String message) {
         lblMessage.setText(message);
-        lblMessage.setStyle("-fx-text-fill: #e74c3c;"); // Rojo
+        lblMessage.setStyle("-fx-text-fill: #e74c3c;");
     }
 
     private void showSuccess(String message) {
         lblMessage.setText(message);
-        lblMessage.setStyle("-fx-text-fill: #27ae60;"); // Verde
+        lblMessage.setStyle("-fx-text-fill: #27ae60;");
     }
 }

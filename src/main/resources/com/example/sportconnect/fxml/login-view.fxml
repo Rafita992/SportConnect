@@ -22,6 +22,7 @@
     <Label text="Bienvenido, inicia sesión" styleClass="subtitle-label" />
 
     <VBox spacing="10.0" styleClass="form-group">
+
         <Label text="Correo Electrónico" styleClass="input-label" />
         <TextField fx:id="textEmail" promptText="ejemplo@correo.com" styleClass="text-input" />
 

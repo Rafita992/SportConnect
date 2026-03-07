@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="600.0" prefWidth="1000.0"
+            stylesheets="@../css/dashboard.css"
+            styleClass="root-pane"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.sportconnect.controller.SportController">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="15" bottom="15" left="30" right="30"/>
+            </padding>
+            <Label text="⚙" styleClass="navbar-icon"/>
+            <Label text="OmniSport" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblWelcome" styleClass="navbar-welcome"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="30" bottom="30" left="40" right="40"/>
+            </padding>
+
+            <Button text="←" styleClass="back-button" onAction="#handleBack"/>
+
+            <VBox styleClass="table-container" spacing="15">
+                <padding>
+                    <Insets top="30" bottom="30" left="30" right="30"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Deportes" styleClass="section-title"/>
+                        <Label text="Gestiona los deportes disponibles en el sistema." styleClass="section-subtitle"/>
+                    </VBox>
+                    <Button text="+ Nuevo deporte" styleClass="new-button" onAction="#handleNewSport"/>
+                </HBox>
+
+                <TableView fx:id="tableSports" VBox.vgrow="ALWAYS" styleClass="data-table">
+                    <columns>
+                        <TableColumn fx:id="colId"      text="ID"          prefWidth="60"/>
+                        <TableColumn fx:id="colNombre"  text="NOMBRE"      prefWidth="250"/>
+                        <TableColumn fx:id="colPistas"  text="Nº PISTAS"   prefWidth="150"/>
+                        <TableColumn fx:id="colAcciones" text="ACCIONES"   prefWidth="120"/>
+                    </columns>
+                </TableView>
+
+                <HBox alignment="CENTER" spacing="15">
+                    <Button fx:id="btnAnterior" text="« Anterior" styleClass="page-button" onAction="#handleAnterior"/>
+                    <Label fx:id="lblPagina" text="Página 1 de 1" styleClass="navbar-welcome"/>
+                    <Button fx:id="btnSiguiente" text="Siguiente »" styleClass="page-button" onAction="#handleSiguiente"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -16,16 +16,12 @@ public class FormSportController {
     @FXML private Label     lblMensaje;
     @FXML private Label     lblWelcome;
     @FXML private Label     lblTitulo;
+    @FXML private Button    btnGuardar;
 
     private User  currentUser;
     private Sport sportEditar;
-
     private final SportService sportService = new SportService();
 
-    /**
-     * currentUser = admin logueado
-     * sportEditar = null si crear, Sport si editar
-     */
     public void initData(User currentUser, Sport sportEditar) {
         this.currentUser = currentUser;
         this.sportEditar = sportEditar;
@@ -34,41 +30,32 @@ public class FormSportController {
         if (sportEditar != null) {
             lblTitulo.setText("Editar Deporte");
             txtNombre.setText(sportEditar.getNombre());
+            btnGuardar.setDisable(false);
+        } else {
+            btnGuardar.setDisable(true);
+            txtNombre.textProperty().addListener((o, v, n) ->
+                    btnGuardar.setDisable(n.trim().isEmpty()));
         }
     }
 
     @FXML
     private void handleGuardar() {
         String nombre = txtNombre.getText().trim();
-
-        if (nombre.isEmpty()) {
-            showError("El nombre no puede estar vacio.");
-            return;
-        }
+        if (nombre.isEmpty()) { showError("El nombre no puede estar vacio."); return; }
 
         if (sportEditar == null) {
-            // MODO CREAR
-            Sport nuevo = new Sport(nombre);
-            sportService.save(nuevo);
+            sportService.save(new Sport(nombre));
             showSuccess("Deporte creado correctamente.");
             txtNombre.clear();
         } else {
-            // MODO EDITAR
             sportEditar.setNombre(nombre);
             sportService.save(sportEditar);
             showSuccess("Deporte actualizado correctamente.");
         }
     }
 
-    private void showError(String mensaje) {
-        lblMensaje.setText(mensaje);
-        lblMensaje.setStyle("-fx-text-fill: #e74c3c;");
-    }
-
-    private void showSuccess(String mensaje) {
-        lblMensaje.setText(mensaje);
-        lblMensaje.setStyle("-fx-text-fill: #27ae60;");
-    }
+    private void showError(String m) { lblMensaje.setText(m); lblMensaje.setStyle("-fx-text-fill: #e74c3c;"); }
+    private void showSuccess(String m) { lblMensaje.setText(m); lblMensaje.setStyle("-fx-text-fill: #27ae60;"); }
 
     @FXML
     private void handleBack() {
@@ -81,8 +68,6 @@ public class FormSportController {
             Stage stage = (Stage) txtNombre.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

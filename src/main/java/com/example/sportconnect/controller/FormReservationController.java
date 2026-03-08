@@ -6,19 +6,19 @@ import com.example.sportconnect.model.User;
 import com.example.sportconnect.service.CourtService;
 import com.example.sportconnect.service.ReservationService;
 import com.example.sportconnect.service.UserService;
+import com.example.sportconnect.component.TimeSlotPicker;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.DateCell;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class FormReservationController {
@@ -26,44 +26,87 @@ public class FormReservationController {
     @FXML private ComboBox<User>  cmbUsuario;
     @FXML private ComboBox<Court> cmbPista;
     @FXML private DatePicker      dateFecha;
-    @FXML private TextField       txtInicio;
-    @FXML private TextField       txtFin;
+    @FXML private VBox            slotContainer;
     @FXML private Label           lblMensaje;
     @FXML private Label           lblWelcome;
     @FXML private Label           lblTitulo;
+    @FXML private Button          btnGuardar;
 
-    private User currentUser;
+    private User        currentUser;
     private Reservation reservacionEditar;
+    private TimeSlotPicker slotPicker;
 
     private final ReservationService reservationService = new ReservationService();
     private final UserService        userService        = new UserService();
     private final CourtService       courtService       = new CourtService();
 
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-    /**
-     * currentUser = admin logueado
-     * reservacionEditar = null si crear, Reservation si editar
-     */
     public void initData(User currentUser, Reservation reservacionEditar) {
-        this.currentUser = currentUser;
+        this.currentUser       = currentUser;
         this.reservacionEditar = reservacionEditar;
         lblWelcome.setText(currentUser.getName());
 
+        slotPicker = new TimeSlotPicker();
+        slotContainer.getChildren().add(slotPicker);
+
         cargarCombos();
+        configurarListeners();
+
+        if (reservacionEditar != null) {
+            btnGuardar.setDisable(false);
+        } else {
+            btnGuardar.setDisable(true);
+            // Habilitar cuando usuario + pista + fecha esten seleccionados (franja se valida al pulsar)
+            Runnable check = () -> {
+                boolean ok = cmbUsuario.getValue() != null
+                        && cmbPista.getValue() != null
+                        && dateFecha.getValue() != null;
+                if (ok) actualizarFranjas();
+            };
+            cmbUsuario.valueProperty().addListener((o, v, n) -> check.run());
+            cmbPista.valueProperty().addListener((o, v, n) -> check.run());
+            dateFecha.valueProperty().addListener((o, v, n) -> check.run());
+        }
+
+        // No permitir fechas pasadas
+        dateFecha.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(java.time.LocalDate.now()));
+            }
+        });
 
         if (reservacionEditar != null) {
             lblTitulo.setText("Editar Reserva");
             cmbUsuario.setValue(reservacionEditar.getUser());
             cmbPista.setValue(reservacionEditar.getCourt());
             dateFecha.setValue(reservacionEditar.getBookingDate());
-            txtInicio.setText(reservacionEditar.getStartTime().format(timeFormatter));
-            txtFin.setText(reservacionEditar.getEndTime().format(timeFormatter));
+            actualizarFranjas();
         }
     }
 
+    private void configurarListeners() {
+        cmbPista.setOnAction(e -> actualizarFranjas());
+        dateFecha.setOnAction(e -> actualizarFranjas());
+        slotPicker.setOnSelectionChanged(() -> btnGuardar.setDisable(slotPicker.getSelectedSlot() == null));
+    }
+
+    private void actualizarFranjas() {
+        Court pista     = cmbPista.getValue();
+        LocalDate fecha = dateFecha.getValue();
+        if (pista == null || fecha == null) return;
+
+        List<Reservation> reservasDelDia = reservationService.getAllReservations()
+                .stream()
+                .filter(r -> r.getCourt().getId().equals(pista.getId())
+                        && r.getBookingDate().equals(fecha)
+                        && (reservacionEditar == null || !r.getId().equals(reservacionEditar.getId())))
+                .toList();
+
+        slotPicker.render(fecha, reservasDelDia);
+    }
+
     private void cargarCombos() {
-        // Cargar usuarios
         List<User> usuarios = userService.getAllUsers();
         cmbUsuario.setItems(FXCollections.observableArrayList(usuarios));
         cmbUsuario.setConverter(new StringConverter<>() {
@@ -71,7 +114,6 @@ public class FormReservationController {
             public User fromString(String s) { return null; }
         });
 
-        // Cargar pistas
         List<Court> pistas = courtService.getAllCourts();
         cmbPista.setItems(FXCollections.observableArrayList(pistas));
         cmbPista.setConverter(new StringConverter<>() {
@@ -82,56 +124,39 @@ public class FormReservationController {
 
     @FXML
     private void handleGuardar() {
-        User usuario   = cmbUsuario.getValue();
-        Court pista    = cmbPista.getValue();
+        User usuario    = cmbUsuario.getValue();
+        Court pista     = cmbPista.getValue();
         LocalDate fecha = dateFecha.getValue();
-        String inicio  = txtInicio.getText().trim();
-        String fin     = txtFin.getText().trim();
+        TimeSlotPicker.TimeSlot slot = slotPicker.getSelectedSlot();
 
-        // Validacion
-        if (usuario == null || pista == null || fecha == null || inicio.isEmpty() || fin.isEmpty()) {
+        if (usuario == null || pista == null || fecha == null) {
             showError("Por favor, rellena todos los campos.");
             return;
         }
-
-        LocalTime horaInicio, horaFin;
-        try {
-            horaInicio = LocalTime.parse(inicio, timeFormatter);
-            horaFin    = LocalTime.parse(fin, timeFormatter);
-        } catch (DateTimeParseException e) {
-            showError("Formato de hora incorrecto. Usa HH:mm (ej: 10:00).");
-            return;
-        }
-
-        if (!horaFin.isAfter(horaInicio)) {
-            showError("La hora de fin debe ser posterior a la de inicio.");
+        if (slot == null) {
+            showError("Por favor, selecciona una franja horaria.");
             return;
         }
 
         if (reservacionEditar == null) {
-            // MODO CREAR
-            Reservation nueva = new Reservation(fecha, horaInicio, horaFin, false, pista, usuario);
+            Reservation nueva = new Reservation(fecha, slot.inicio, slot.fin, false, pista, usuario);
             reservationService.save(nueva);
             showSuccess("Reserva creada correctamente.");
-            limpiarFormulario();
+            cmbUsuario.setValue(null);
+            cmbPista.setValue(null);
+            dateFecha.setValue(null);
+            slotContainer.getChildren().clear();
+            slotPicker = new TimeSlotPicker();
+            slotContainer.getChildren().add(slotPicker);
         } else {
-            // MODO EDITAR
             reservacionEditar.setUser(usuario);
             reservacionEditar.setCourt(pista);
             reservacionEditar.setBookingDate(fecha);
-            reservacionEditar.setStartTime(horaInicio);
-            reservacionEditar.setEndTime(horaFin);
+            reservacionEditar.setStartTime(slot.inicio);
+            reservacionEditar.setEndTime(slot.fin);
             reservationService.save(reservacionEditar);
             showSuccess("Reserva actualizada correctamente.");
         }
-    }
-
-    private void limpiarFormulario() {
-        cmbUsuario.setValue(null);
-        cmbPista.setValue(null);
-        dateFecha.setValue(null);
-        txtInicio.clear();
-        txtFin.clear();
     }
 
     private void showError(String mensaje) {
@@ -152,11 +177,9 @@ public class FormReservationController {
             Parent root = loader.load();
             ReservationController controller = loader.getController();
             controller.initData(currentUser);
-            Stage stage = (Stage) txtInicio.getScene().getWindow();
+            Stage stage = (Stage) cmbPista.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

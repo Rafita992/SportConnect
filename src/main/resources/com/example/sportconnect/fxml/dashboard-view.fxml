@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -8,18 +11,14 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="1000.0"
-            stylesheets="@../css/dashboard.css"
-            styleClass="root-pane"
+<BorderPane stylesheets="@../css/dashboard.css" styleClass="root-pane"
+            maxHeight="Infinity" maxWidth="Infinity"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.sportconnect.controller.DashboardController">
 
-    <!-- NAVBAR SUPERIOR -->
     <top>
         <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="10">
-            <padding>
-                <Insets top="15" bottom="15" left="30" right="30"/>
-            </padding>
+            <padding><Insets top="15" bottom="15" left="30" right="30"/></padding>
             <Label text="⚙" styleClass="navbar-icon"/>
             <Label text="OmniSport" styleClass="navbar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
@@ -28,49 +27,90 @@
         </HBox>
     </top>
 
-    <!-- CONTENIDO CENTRAL: 4 CARDS -->
     <center>
-        <VBox alignment="CENTER" spacing="40">
-            <padding>
-                <Insets top="60" bottom="60" left="60" right="60"/>
-            </padding>
+        <VBox spacing="20" VBox.vgrow="ALWAYS">
+            <padding><Insets top="25" bottom="25" left="40" right="40"/></padding>
 
-            <HBox alignment="CENTER" spacing="30">
+            <!-- CABECERA -->
+            <VBox spacing="4">
+                <Label text="Panel de administración" styleClass="section-title"/>
+                <Label text="Resumen general del sistema en tiempo real." styleClass="section-subtitle"/>
+            </VBox>
 
-                <!-- CARD USUARIOS -->
-                <VBox styleClass="card" spacing="15" onMouseClicked="#handleUsuarios">
-                    <Label text="👥" styleClass="card-icon"/>
-                    <Label text="Usuarios" styleClass="card-title"/>
-                    <Label text="Gestiona los usuarios del sistema, altas, bajas y modificaciones."
-                           styleClass="card-description" wrapText="true"/>
+            <!-- FILA ESTADISTICAS -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+
+                <VBox styleClass="stat-card" spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Label text="📅" styleClass="stat-icon"/>
+                    <Label text="RESERVAS HOY" styleClass="stat-label"/>
+                    <Label fx:id="lblReservasHoy" text="0" styleClass="stat-value"/>
                 </VBox>
 
-                <!-- CARD RESERVAS -->
-                <VBox styleClass="card" spacing="15" onMouseClicked="#handleReservas">
-                    <Label text="📅" styleClass="card-icon"/>
-                    <Label text="Reservas" styleClass="card-title"/>
-                    <Label text="Consulta y administra las reservas de las pistas."
-                           styleClass="card-description" wrapText="true"/>
+                <VBox styleClass="stat-card" spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Label text="👥" styleClass="stat-icon"/>
+                    <Label text="USUARIOS" styleClass="stat-label"/>
+                    <Label fx:id="lblTotalUsuarios" text="0" styleClass="stat-value"/>
                 </VBox>
 
-                <!-- CARD PISTAS -->
-                <VBox styleClass="card" spacing="15" onMouseClicked="#handlePistas">
-                    <Label text="🏟" styleClass="card-icon"/>
-                    <Label text="Pistas" styleClass="card-title"/>
-                    <Label text="Crea, edita y desactiva pistas de tenis y pádel."
-                           styleClass="card-description" wrapText="true"/>
+                <VBox styleClass="stat-card" spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Label text="🏆" styleClass="stat-icon"/>
+                    <Label text="PISTA MÁS RESERVADA" styleClass="stat-label"/>
+                    <Label fx:id="lblPistaMasReservada" text="-" styleClass="stat-value-small" wrapText="true"/>
                 </VBox>
 
-                <!-- CARD DEPORTES -->
-                <VBox styleClass="card" spacing="15" onMouseClicked="#handleSports">
-                    <Label text="🏆" styleClass="card-icon"/>
-                    <Label text="Deportes" styleClass="card-title"/>
-                    <Label text="Gestiona los deportes."
-                           styleClass="card-description" wrapText="true"/>
+                <VBox styleClass="stat-card-wide" spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <Label text="RESERVAS ÚLTIMOS 7 DÍAS" styleClass="stat-label"/>
+                    <BarChart fx:id="barChart" styleClass="stats-chart" animated="false"
+                              prefHeight="140" maxHeight="140" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+                        <xAxis><CategoryAxis fx:id="xAxis"/></xAxis>
+                        <yAxis><NumberAxis fx:id="yAxis" minorTickVisible="false" tickUnit="1"/></yAxis>
+                    </BarChart>
                 </VBox>
 
             </HBox>
+
+            <!-- SEPARADOR -->
+            <VBox spacing="4">
+                <Label text="Gestión" styleClass="section-title"/>
+                <Label text="Accede a cada módulo del sistema." styleClass="section-subtitle"/>
+            </VBox>
+
+            <!-- FILA CARDS -->
+            <HBox alignment="CENTER_LEFT" spacing="15" VBox.vgrow="ALWAYS">
+                <VBox styleClass="card" spacing="12" onMouseClicked="#handleUsuarios"
+                      HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="220">
+                    <Label text="👥" styleClass="card-icon"/>
+                    <Label text="Usuarios" styleClass="card-title"/>
+                    <Label text="Gestiona los usuarios del sistema, altas, bajas y modificaciones." styleClass="card-description" wrapText="true"/>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <Label text="Ver usuarios →" styleClass="card-link"/>
+                </VBox>
+                <VBox styleClass="card" spacing="12" onMouseClicked="#handleReservas"
+                      HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="220">
+                    <Label text="📅" styleClass="card-icon"/>
+                    <Label text="Reservas" styleClass="card-title"/>
+                    <Label text="Consulta y administra las reservas de las pistas deportivas." styleClass="card-description" wrapText="true"/>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <Label text="Ver reservas →" styleClass="card-link"/>
+                </VBox>
+                <VBox styleClass="card" spacing="12" onMouseClicked="#handlePistas"
+                      HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="220">
+                    <Label text="🏟" styleClass="card-icon"/>
+                    <Label text="Pistas" styleClass="card-title"/>
+                    <Label text="Crea, edita y desactiva pistas de tenis y pádel." styleClass="card-description" wrapText="true"/>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <Label text="Ver pistas →" styleClass="card-link"/>
+                </VBox>
+                <VBox styleClass="card" spacing="12" onMouseClicked="#handleSports"
+                      HBox.hgrow="ALWAYS" maxWidth="Infinity" VBox.vgrow="ALWAYS" maxHeight="220">
+                    <Label text="🏆" styleClass="card-icon"/>
+                    <Label text="Deportes" styleClass="card-title"/>
+                    <Label text="Gestiona los deportes disponibles en el sistema." styleClass="card-description" wrapText="true"/>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <Label text="Ver deportes →" styleClass="card-link"/>
+                </VBox>
+            </HBox>
+
         </VBox>
     </center>
-
 </BorderPane>

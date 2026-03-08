@@ -13,39 +13,34 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // 1. Definimos la ruta exacta basada en tu estructura
-        // El "/" inicial es fundamental para que busque desde la raíz de resources
         String fxmlPath = "/com/example/sportconnect/fxml/login-view.fxml";
         URL fxmlLocation = getClass().getResource(fxmlPath);
 
-        // 2. Verificación de seguridad para evitar el error "Location is not set"
         if (fxmlLocation == null) {
-            System.err.println(" ERROR: No se pudo encontrar el archivo FXML.");
-            System.err.println("Ruta buscada: " + fxmlPath);
-            System.err.println("Asegúrate de que el archivo esté en: src/main/resources/fxml/login-view.fxml");
-            throw new IllegalStateException("La ubicación del FXML no está configurada (Location is not set).");
+            System.err.println("ERROR: No se pudo encontrar el archivo FXML.");
+            throw new IllegalStateException("La ubicacion del FXML no esta configurada.");
         }
 
-        // 3. Carga del archivo FXML
         FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
 
         try {
-            Scene scene = new Scene(fxmlLoader.load(), 400, 500);
-            stage.setTitle("SPORTCONNECT - Iniciar Sesión");
+            Scene scene = new Scene(fxmlLoader.load(), 1000, 650);
+            stage.setTitle("SPORTCONNECT - Iniciar Sesion");
             stage.setScene(scene);
-            stage.setResizable(false);
+            stage.setResizable(true);
+            stage.setMinWidth(800);
+            stage.setMinHeight(550);
             stage.show();
-            System.out.println(" Aplicación iniciada correctamente.");
+            System.out.println("Aplicacion iniciada correctamente.");
         } catch (IOException e) {
-            System.err.println(" ERROR al cargar el archivo FXML: " + e.getMessage());
+            System.err.println("ERROR al cargar el archivo FXML: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     @Override
     public void stop() {
-        // 4. Cerramos Hibernate de forma segura al salir
-        System.out.println("Cerrando conexión con la base de datos...");
+        System.out.println("Cerrando conexion con la base de datos...");
         HibernateUtil.shutdown();
     }
 

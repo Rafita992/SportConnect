@@ -46,7 +46,7 @@
 
                 <Label fx:id="lblMensaje" styleClass="error-label" wrapText="true"/>
 
-                <Button text="Guardar Pista" styleClass="new-button" maxWidth="Infinity" onAction="#handleGuardar"/>
+                <Button fx:id="btnGuardar" text="Guardar Pista" styleClass="new-button" maxWidth="Infinity" onAction="#handleGuardar" disable="true"/>
 
             </VBox>
         </VBox>

@@ -1,41 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane prefHeight="600.0" prefWidth="1000.0"
-            stylesheets="@../css/dashboard.css"
-            styleClass="root-pane"
+<BorderPane stylesheets="@../css/dashboard.css" styleClass="root-pane" maxHeight="Infinity" maxWidth="Infinity"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.sportconnect.controller.UserController">
-
-    <!-- NAVBAR -->
     <top>
         <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="10">
-            <padding>
-                <Insets top="15" bottom="15" left="30" right="30"/>
-            </padding>
+            <padding><Insets top="15" bottom="15" left="30" right="30"/></padding>
             <Label text="⚙" styleClass="navbar-icon"/>
             <Label text="OmniSport" styleClass="navbar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="lblWelcome" styleClass="navbar-welcome"/>
         </HBox>
     </top>
-
     <center>
         <VBox spacing="20">
-            <padding>
-                <Insets top="30" bottom="30" left="40" right="40"/>
-            </padding>
-
+            <padding><Insets top="30" bottom="30" left="40" right="40"/></padding>
             <Button text="←" styleClass="back-button" onAction="#handleBack"/>
-
             <VBox styleClass="table-container" spacing="15">
-                <padding>
-                    <Insets top="30" bottom="30" left="30" right="30"/>
-                </padding>
-
+                <padding><Insets top="30" bottom="30" left="30" right="30"/></padding>
                 <HBox alignment="CENTER_LEFT">
                     <VBox spacing="4" HBox.hgrow="ALWAYS">
                         <Label text="Usuarios" styleClass="section-title"/>
@@ -43,27 +27,23 @@
                     </VBox>
                     <Button text="+ Nuevo usuario" styleClass="new-button" onAction="#handleNewUser"/>
                 </HBox>
-
-                <TableView fx:id="tableUsers" VBox.vgrow="ALWAYS" styleClass="data-table">
+                <TableView fx:id="tableUsers" VBox.vgrow="ALWAYS" styleClass="data-table" fixedCellSize="40">
                     <columns>
-                        <TableColumn fx:id="colId"       text="ID"        prefWidth="60"/>
-                        <TableColumn fx:id="colNombre"   text="NOMBRE"    prefWidth="130"/>
-                        <TableColumn fx:id="colApellido" text="APELLIDO"  prefWidth="130"/>
-                        <TableColumn fx:id="colEmail"    text="EMAIL"     prefWidth="200"/>
-                        <TableColumn fx:id="colTelefono" text="TELÉFONO"  prefWidth="120"/>
-                        <TableColumn fx:id="colAdmin"    text="ADMIN"     prefWidth="80"/>
-                        <TableColumn fx:id="colAcciones" text="ACCIONES"  prefWidth="120"/>
+                        <TableColumn fx:id="colId"       text="ID"/>
+                        <TableColumn fx:id="colNombre"   text="NOMBRE"/>
+                        <TableColumn fx:id="colApellido" text="APELLIDO"/>
+                        <TableColumn fx:id="colEmail"    text="EMAIL"/>
+                        <TableColumn fx:id="colTelefono" text="TELÉFONO"/>
+                        <TableColumn fx:id="colAdmin"    text="ADMIN"/>
+                        <TableColumn fx:id="colAcciones" text="ACCIONES"/>
                     </columns>
                 </TableView>
-
                 <HBox alignment="CENTER" spacing="15">
                     <Button fx:id="btnAnterior" text="« Anterior" styleClass="page-button" onAction="#handleAnterior"/>
                     <Label fx:id="lblPagina" text="Página 1 de 1" styleClass="navbar-welcome"/>
                     <Button fx:id="btnSiguiente" text="Siguiente »" styleClass="page-button" onAction="#handleSiguiente"/>
                 </HBox>
-
             </VBox>
         </VBox>
     </center>
-
 </BorderPane>

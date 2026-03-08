@@ -23,20 +23,16 @@ public class FormCourtController {
     @FXML private Label           lblMensaje;
     @FXML private Label           lblWelcome;
     @FXML private Label           lblTitulo;
+    @FXML private Button          btnGuardar;
 
     private User  currentUser;
     private Court courtEditar;
-
     private final CourtService courtService = new CourtService();
     private final SportService sportService = new SportService();
 
-    /**
-     * currentUser = admin logueado
-     * courtEditar = null si crear, Court si editar
-     */
     public void initData(User currentUser, Court courtEditar) {
-        this.currentUser  = currentUser;
-        this.courtEditar  = courtEditar;
+        this.currentUser = currentUser;
+        this.courtEditar = courtEditar;
         lblWelcome.setText(currentUser.getName());
 
         cargarDeportes();
@@ -45,7 +41,21 @@ public class FormCourtController {
             lblTitulo.setText("Editar Pista");
             txtNombre.setText(courtEditar.getNombre());
             cmbDeporte.setValue(courtEditar.getSport());
+            btnGuardar.setDisable(false);
+        } else {
+            btnGuardar.setDisable(true);
+            setupValidacion();
         }
+    }
+
+    private void setupValidacion() {
+        Runnable check = () -> {
+            boolean ok = !txtNombre.getText().trim().isEmpty()
+                    && cmbDeporte.getValue() != null;
+            btnGuardar.setDisable(!ok);
+        };
+        txtNombre.textProperty().addListener((o, v, n) -> check.run());
+        cmbDeporte.valueProperty().addListener((o, v, n) -> check.run());
     }
 
     private void cargarDeportes() {
@@ -61,20 +71,13 @@ public class FormCourtController {
     private void handleGuardar() {
         String nombre = txtNombre.getText().trim();
         Sport deporte = cmbDeporte.getValue();
-
-        if (nombre.isEmpty() || deporte == null) {
-            showError("Por favor, rellena todos los campos.");
-            return;
-        }
+        if (nombre.isEmpty() || deporte == null) { showError("Por favor, rellena todos los campos."); return; }
 
         if (courtEditar == null) {
-            // MODO CREAR
-            Court nueva = new Court(nombre, deporte);
-            courtService.save(nueva);
+            courtService.save(new Court(nombre, deporte));
             showSuccess("Pista creada correctamente.");
             limpiarFormulario();
         } else {
-            // MODO EDITAR
             courtEditar.setNombre(nombre);
             courtEditar.setSport(deporte);
             courtService.save(courtEditar);
@@ -82,20 +85,9 @@ public class FormCourtController {
         }
     }
 
-    private void limpiarFormulario() {
-        txtNombre.clear();
-        cmbDeporte.setValue(null);
-    }
-
-    private void showError(String mensaje) {
-        lblMensaje.setText(mensaje);
-        lblMensaje.setStyle("-fx-text-fill: #e74c3c;");
-    }
-
-    private void showSuccess(String mensaje) {
-        lblMensaje.setText(mensaje);
-        lblMensaje.setStyle("-fx-text-fill: #27ae60;");
-    }
+    private void limpiarFormulario() { txtNombre.clear(); cmbDeporte.setValue(null); }
+    private void showError(String m) { lblMensaje.setText(m); lblMensaje.setStyle("-fx-text-fill: #e74c3c;"); }
+    private void showSuccess(String m) { lblMensaje.setText(m); lblMensaje.setStyle("-fx-text-fill: #27ae60;"); }
 
     @FXML
     private void handleBack() {
@@ -108,8 +100,6 @@ public class FormCourtController {
             Stage stage = (Stage) txtNombre.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

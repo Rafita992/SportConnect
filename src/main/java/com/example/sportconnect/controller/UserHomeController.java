@@ -128,10 +128,10 @@ public class UserHomeController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Cancelar reserva");
         alert.setHeaderText("¿Estás seguro?");
-        alert.setContentText("Se cancelará la reserva del " + reservation.getBookingDate());
+        alert.setContentText("Se eliminara la reserva del " + reservation.getBookingDate());
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                reservationService.cancel(reservation);
+                reservationService.delete(reservation);
                 loadReservations();
             }
         });

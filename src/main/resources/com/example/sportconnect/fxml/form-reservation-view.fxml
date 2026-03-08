@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="600.0" prefWidth="1000.0"
+            stylesheets="@../css/dashboard.css"
+            styleClass="root-pane"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.sportconnect.controller.FormReservationController">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="15" bottom="15" left="30" right="30"/>
+            </padding>
+            <Label text="⚙" styleClass="navbar-icon"/>
+            <Label text="OmniSport" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblWelcome" styleClass="navbar-welcome"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="30" bottom="30" left="40" right="40"/>
+            </padding>
+
+            <Button text="←" styleClass="back-button" onAction="#handleBack"/>
+
+            <VBox styleClass="table-container" spacing="15" maxWidth="500" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="30" bottom="30" left="30" right="30"/>
+                </padding>
+
+                <Label fx:id="lblTitulo" text="Nueva Reserva" styleClass="section-title"/>
+                <Label text="Rellena los campos para gestionar la reserva." styleClass="section-subtitle"/>
+
+                <Label text="Usuario" styleClass="input-label"/>
+                <ComboBox fx:id="cmbUsuario" maxWidth="Infinity" styleClass="text-input"/>
+
+                <Label text="Pista" styleClass="input-label"/>
+                <ComboBox fx:id="cmbPista" maxWidth="Infinity" styleClass="text-input"/>
+
+                <Label text="Fecha" styleClass="input-label"/>
+                <DatePicker fx:id="dateFecha" maxWidth="Infinity" styleClass="text-input"/>
+
+                <Label text="Hora inicio (HH:mm)" styleClass="input-label"/>
+                <TextField fx:id="txtInicio" promptText="10:00" styleClass="text-input"/>
+
+                <Label text="Hora fin (HH:mm)" styleClass="input-label"/>
+                <TextField fx:id="txtFin" promptText="11:00" styleClass="text-input"/>
+
+                <Label fx:id="lblMensaje" styleClass="error-label" wrapText="true"/>
+
+                <Button text="Guardar Reserva" styleClass="new-button" maxWidth="Infinity" onAction="#handleGuardar"/>
+
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

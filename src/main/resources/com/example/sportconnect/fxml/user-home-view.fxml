@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="600.0" prefWidth="1000.0"
+            stylesheets="@../css/dashboard.css"
+            styleClass="root-pane"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.sportconnect.controller.UserHomeController">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="15" bottom="15" left="30" right="30"/>
+            </padding>
+            <Label text="⚙" styleClass="navbar-icon"/>
+            <Label text="OmniSport" styleClass="navbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblWelcome" styleClass="navbar-welcome"/>
+            <Button text="Cerrar sesión" styleClass="logout-button" onAction="#handleLogout"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="25">
+            <padding>
+                <Insets top="30" bottom="30" left="40" right="40"/>
+            </padding>
+
+            <!-- Bienvenida -->
+            <VBox spacing="5">
+                <Label fx:id="lblBienvenida" text="¡Bienvenido!" styleClass="section-title"/>
+                <Label text="Aquí puedes ver y gestionar tus próximas reservas." styleClass="section-subtitle"/>
+            </VBox>
+
+            <!-- Tabla de reservas -->
+            <VBox styleClass="table-container" spacing="15">
+                <padding>
+                    <Insets top="25" bottom="25" left="25" right="25"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Mis próximas reservas" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="+ Nueva reserva" styleClass="new-button" onAction="#handleNewReservation"/>
+                </HBox>
+
+                <TableView fx:id="tableReservations" styleClass="data-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colPista"  text="PISTA"   prefWidth="200"/>
+                        <TableColumn fx:id="colFecha"  text="FECHA"   prefWidth="150"/>
+                        <TableColumn fx:id="colInicio" text="INICIO"  prefWidth="100"/>
+                        <TableColumn fx:id="colFin"    text="FIN"     prefWidth="100"/>
+                        <TableColumn fx:id="colEstado" text="ESTADO"  prefWidth="100"/>
+                        <TableColumn fx:id="colAcciones" text="ACCIONES" prefWidth="120"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No tienes reservas próximas." styleClass="section-subtitle"/>
+                    </placeholder>
+                </TableView>
+
+                <HBox alignment="CENTER" spacing="15">
+                    <Button fx:id="btnAnterior" text="« Anterior" styleClass="page-button" onAction="#handleAnterior"/>
+                    <Label fx:id="lblPagina" text="Página 1 de 1" styleClass="section-subtitle"/>
+                    <Button fx:id="btnSiguiente" text="Siguiente »" styleClass="page-button" onAction="#handleSiguiente"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

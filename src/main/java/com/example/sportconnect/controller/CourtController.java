@@ -27,7 +27,7 @@ public class CourtController {
     @FXML private Label  lblPagina;
     @FXML private Label  lblWelcome;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 5;
     private int currentPage = 0;
     private List<Court> allCourts;
 
@@ -42,42 +42,33 @@ public class CourtController {
     }
 
     private void setupColumns() {
+        tableCourts.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableCourts.setPrefHeight(5 * 40 + 30);
+
         colId.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getId().toString()));
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getId().toString()));
 
         colNombre.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getNombre()));
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
 
         colDeporte.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getSport().getNombre()));
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getSport().getNombre()));
 
         colAcciones.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit   = new Button("✏");
-            private final Button btnDelete = new Button("🗑");
-            private final HBox box = new HBox(6, btnEdit, btnDelete);
-
-            {
-                btnEdit.getStyleClass().add("edit-btn");
-                btnDelete.getStyleClass().add("delete-btn");
-
-                btnEdit.setOnAction(e -> {
-                    Court c = getTableView().getItems().get(getIndex());
-                    handleEdit(c);
-                });
-
-                btnDelete.setOnAction(e -> {
-                    Court c = getTableView().getItems().get(getIndex());
-                    handleDelete(c);
-                });
-            }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                if (empty || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                } else {
+                    Button btnEdit   = new Button("✏");
+                    Button btnDelete = new Button("🗑");
+                    btnEdit.getStyleClass().add("edit-btn");
+                    btnDelete.getStyleClass().add("delete-btn");
+                    btnEdit.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
+                    btnDelete.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
+                    setGraphic(new HBox(6, btnEdit, btnDelete));
+                }
             }
         });
     }
@@ -90,47 +81,53 @@ public class CourtController {
     private void showPage(int page) {
         int totalPages = (int) Math.ceil((double) allCourts.size() / PAGE_SIZE);
         if (totalPages == 0) totalPages = 1;
-
         currentPage = page;
-
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allCourts.size());
-
         tableCourts.setItems(FXCollections.observableArrayList(allCourts.subList(from, to)));
-
-        lblPagina.setText("Página " + (currentPage + 1) + " de " + totalPages);
+        lblPagina.setText("Pagina " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
     }
 
-    @FXML
-    private void handleAnterior() {
-        if (currentPage > 0) showPage(currentPage - 1);
-    }
+    @FXML private void handleAnterior() { if (currentPage > 0) showPage(currentPage - 1); }
 
-    @FXML
-    private void handleSiguiente() {
+    @FXML private void handleSiguiente() {
         int totalPages = (int) Math.ceil((double) allCourts.size() / PAGE_SIZE);
         if (currentPage < totalPages - 1) showPage(currentPage + 1);
     }
 
-    @FXML
-    private void handleNewCourt() {
-        // TODO: abrir formulario de nueva pista
-        System.out.println("Nueva pista");
+    @FXML private void handleNewCourt() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/sportconnect/fxml/form-court-view.fxml"));
+            Parent root = loader.load();
+            FormCourtController controller = loader.getController();
+            controller.initData(currentUser, null);
+            Stage stage = (Stage) tableCourts.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void handleEdit(Court court) {
-        // TODO: abrir formulario de edición
-        System.out.println("Editar pista: " + court.getId());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/sportconnect/fxml/form-court-view.fxml"));
+            Parent root = loader.load();
+            FormCourtController controller = loader.getController();
+            controller.initData(currentUser, court);
+            Stage stage = (Stage) tableCourts.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void handleDelete(Court court) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Eliminar pista");
-        alert.setHeaderText("¿Estás seguro?");
-        alert.setContentText("Se eliminará la pista permanentemente.");
-
+        alert.setHeaderText("Esta seguro?");
+        alert.setContentText("Se eliminara la pista permanentemente.");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 courtService.delete(court);
@@ -139,21 +136,16 @@ public class CourtController {
         });
     }
 
-    @FXML
-    private void handleBack() {
+    @FXML private void handleBack() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/sportconnect/fxml/dashboard-view.fxml"));
             Parent root = loader.load();
-
             DashboardController controller = loader.getController();
             controller.initData(currentUser);
-
             Stage stage = (Stage) tableCourts.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

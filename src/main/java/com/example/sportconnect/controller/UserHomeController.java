@@ -1,8 +1,8 @@
 package com.example.sportconnect.controller;
 
-import com.example.sportconnect.service.ReservationService;
 import com.example.sportconnect.model.Reservation;
 import com.example.sportconnect.model.User;
+import com.example.sportconnect.service.ReservationService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,13 +12,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+public class UserHomeController {
 
-public class ReservationController {
-
-    @FXML private TableView<Reservation> tableReservations;
-    @FXML private TableColumn<Reservation, String> colUsuario;
+    @FXML private TableView<Reservation>           tableReservations;
     @FXML private TableColumn<Reservation, String> colPista;
     @FXML private TableColumn<Reservation, String> colFecha;
     @FXML private TableColumn<Reservation, String> colInicio;
@@ -30,6 +31,7 @@ public class ReservationController {
     @FXML private Button btnSiguiente;
     @FXML private Label  lblPagina;
     @FXML private Label  lblWelcome;
+    @FXML private Label  lblBienvenida;
 
     private static final int PAGE_SIZE = 5;
     private int currentPage = 0;
@@ -41,6 +43,7 @@ public class ReservationController {
     public void initData(User user) {
         this.currentUser = user;
         lblWelcome.setText(user.getName());
+        lblBienvenida.setText("¡Bienvenido, " + user.getName() + "!");
         setupColumns();
         loadReservations();
     }
@@ -49,21 +52,21 @@ public class ReservationController {
         tableReservations.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableReservations.setPrefHeight(5 * 40 + 30);
 
-        colUsuario.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getUser().getName() + " " + data.getValue().getUser().getLastName()));
-
         colPista.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getCourt().getNombre()));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getCourt().getNombre()));
 
         colFecha.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getBookingDate().toString()));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getBookingDate().toString()));
 
         colInicio.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getStartTime().toString()));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getStartTime().toString()));
 
         colFin.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getEndTime().toString()));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getEndTime().toString()));
 
         colEstado.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -76,20 +79,29 @@ public class ReservationController {
                 if (empty || getIndex() >= getTableView().getItems().size()) {
                     setGraphic(null);
                 } else {
-                    Button btnEdit   = new Button("✏");
-                    Button btnDelete = new Button("🗑");
-                    btnEdit.getStyleClass().add("edit-btn");
-                    btnDelete.getStyleClass().add("delete-btn");
-                    btnEdit.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
-                    btnDelete.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
-                    setGraphic(new HBox(6, btnEdit, btnDelete));
+                    Reservation r = getTableView().getItems().get(getIndex());
+                    // Solo mostrar cancelar si la reserva está activa
+                    if (!r.getCancelled()) {
+                        Button btnCancelar = new Button("Cancelar");
+                        btnCancelar.getStyleClass().add("delete-btn");
+                        btnCancelar.setOnAction(e -> handleCancelar(getTableView().getItems().get(getIndex())));
+                        setGraphic(btnCancelar);
+                    } else {
+                        setGraphic(null);
+                    }
                 }
             }
         });
     }
 
     private void loadReservations() {
-        allReservations = reservationService.getAllReservations();
+        // Obtener solo las reservas del usuario actual, ordenadas por fecha, solo futuras
+        allReservations = reservationService.getReservationsByUser(currentUser)
+                .stream()
+                .filter(r -> !r.getBookingDate().isBefore(LocalDate.now()))
+                .sorted(Comparator.comparing(Reservation::getBookingDate)
+                        .thenComparing(Reservation::getStartTime))
+                .collect(Collectors.toList());
         showPage(0);
     }
 
@@ -100,7 +112,7 @@ public class ReservationController {
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allReservations.size());
         tableReservations.setItems(FXCollections.observableArrayList(allReservations.subList(from, to)));
-        lblPagina.setText("Pagina " + (currentPage + 1) + " de " + totalPages);
+        lblPagina.setText("Página " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
     }
@@ -112,52 +124,37 @@ public class ReservationController {
         if (currentPage < totalPages - 1) showPage(currentPage + 1);
     }
 
-    @FXML private void handleNewReservation() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/sportconnect/fxml/form-reservation-view.fxml"));
-            Parent root = loader.load();
-            FormReservationController controller = loader.getController();
-            controller.initData(currentUser, null);
-            Stage stage = (Stage) tableReservations.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void handleEdit(Reservation reservation) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/sportconnect/fxml/form-reservation-view.fxml"));
-            Parent root = loader.load();
-            FormReservationController controller = loader.getController();
-            controller.initData(currentUser, reservation);
-            Stage stage = (Stage) tableReservations.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void handleDelete(Reservation reservation) {
+    private void handleCancelar(Reservation reservation) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar reserva");
-        alert.setHeaderText("Esta seguro?");
-        alert.setContentText("Se eliminara la reserva permanentemente.");
+        alert.setTitle("Cancelar reserva");
+        alert.setHeaderText("¿Estás seguro?");
+        alert.setContentText("Se cancelará la reserva del " + reservation.getBookingDate());
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                reservationService.delete(reservation);
+                reservationService.cancel(reservation);
                 loadReservations();
             }
         });
     }
 
-    @FXML private void handleBack() {
+    @FXML private void handleNewReservation() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/sportconnect/fxml/dashboard-view.fxml"));
+                    "/com/example/sportconnect/fxml/user-form-reservation-view.fxml"));
             Parent root = loader.load();
-            DashboardController controller = loader.getController();
+            UserFormReservationController controller = loader.getController();
             controller.initData(currentUser);
+            Stage stage = (Stage) tableReservations.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    @FXML private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/sportconnect/fxml/login-view.fxml"));
+            Parent root = loader.load();
             Stage stage = (Stage) tableReservations.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

@@ -73,3 +73,17 @@
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
 }
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #00d2ff;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 6 0;
+}
+
+.link-button:hover {
+    -fx-text-fill: #3ae0ff;
+    -fx-underline: true;
+}

@@ -66,7 +66,16 @@ public class FormSportController {
             SportController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) txtNombre.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Deportes");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }

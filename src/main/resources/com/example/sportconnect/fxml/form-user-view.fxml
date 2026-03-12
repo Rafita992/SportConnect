@@ -15,6 +15,8 @@
         </HBox>
     </top>
     <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll">
+        <content>
         <VBox spacing="20">
             <padding><Insets top="30" bottom="30" left="40" right="40"/></padding>
             <Button text="←" styleClass="back-button" onAction="#handleBack"/>
@@ -37,5 +39,7 @@
                 <Button fx:id="btnGuardar" text="Crear Usuario" styleClass="new-button" maxWidth="Infinity" onAction="#handleGuardar" disable="true"/>
             </VBox>
         </VBox>
+        </content>
+        </ScrollPane>
     </center>
 </BorderPane>

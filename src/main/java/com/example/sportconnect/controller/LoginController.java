@@ -59,7 +59,16 @@ public class LoginController {
             DashboardController controller = loader.getController();
             controller.initData(user);
             Stage stage = (Stage) btnLogin.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Panel de administración");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) {
             showError("Error al cargar el dashboard.");
@@ -75,7 +84,16 @@ public class LoginController {
             UserHomeController controller = loader.getController();
             controller.initData(user);
             Stage stage = (Stage) btnLogin.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Inicio");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) {
             showError("Error al cargar la vista de usuario.");
@@ -91,5 +109,22 @@ public class LoginController {
     private void showSuccess(String message) {
         lblMessage.setText(message);
         lblMessage.setStyle("-fx-text-fill: #27ae60;");
+    }
+
+    @FXML
+    private void handleRegister() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/sportconnect/fxml/register-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) btnLogin.getScene().getWindow();
+            double x = stage.getX(), y = stage.getY();
+            double w = stage.getWidth(), h = stage.getHeight();
+            stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Registro");
+            stage.setX(x); stage.setY(y);
+            stage.setWidth(w); stage.setHeight(h);
+            stage.show();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

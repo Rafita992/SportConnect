@@ -178,7 +178,16 @@ public class FormReservationController {
             ReservationController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) cmbPista.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Reservas");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }

@@ -43,7 +43,6 @@ public class CourtController {
 
     private void setupColumns() {
         tableCourts.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableCourts.setPrefHeight(5 * 40 + 30);
 
         colId.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getId().toString()));
@@ -85,6 +84,11 @@ public class CourtController {
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allCourts.size());
         tableCourts.setItems(FXCollections.observableArrayList(allCourts.subList(from, to)));
+        int rowCount = tableCourts.getItems().size();
+        tableCourts.setPrefHeight(rowCount * 40 + 30);
+        tableCourts.setMinHeight(rowCount * 40 + 30);
+        tableCourts.setMaxHeight(rowCount * 40 + 30);
+        tableCourts.refresh();
         lblPagina.setText("Pagina " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
@@ -105,7 +109,16 @@ public class CourtController {
             FormCourtController controller = loader.getController();
             controller.initData(currentUser, null);
             Stage stage = (Stage) tableCourts.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Pista");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -118,7 +131,16 @@ public class CourtController {
             FormCourtController controller = loader.getController();
             controller.initData(currentUser, court);
             Stage stage = (Stage) tableCourts.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Pista");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -144,7 +166,16 @@ public class CourtController {
             DashboardController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) tableCourts.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Panel de administración");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }

@@ -50,7 +50,6 @@ public class UserHomeController {
 
     private void setupColumns() {
         tableReservations.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableReservations.setPrefHeight(5 * 40 + 30);
 
         colPista.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -112,6 +111,11 @@ public class UserHomeController {
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allReservations.size());
         tableReservations.setItems(FXCollections.observableArrayList(allReservations.subList(from, to)));
+        int rowCount = tableReservations.getItems().size();
+        tableReservations.setPrefHeight(rowCount * 40 + 30);
+        tableReservations.setMinHeight(rowCount * 40 + 30);
+        tableReservations.setMaxHeight(rowCount * 40 + 30);
+        tableReservations.refresh();
         lblPagina.setText("Página " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
@@ -145,7 +149,17 @@ public class UserHomeController {
             UserFormReservationController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) tableReservations.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Reserva");
+            stage.setTitle("SPORTCONNECT - Nueva Reserva");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -156,7 +170,16 @@ public class UserHomeController {
                     "/com/example/sportconnect/fxml/login-view.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) tableReservations.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Iniciar Sesión");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }

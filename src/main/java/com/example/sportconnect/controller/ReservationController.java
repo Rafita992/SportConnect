@@ -47,7 +47,6 @@ public class ReservationController {
 
     private void setupColumns() {
         tableReservations.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableReservations.setPrefHeight(5 * 40 + 30);
 
         colUsuario.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -100,6 +99,11 @@ public class ReservationController {
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allReservations.size());
         tableReservations.setItems(FXCollections.observableArrayList(allReservations.subList(from, to)));
+        int rowCount = tableReservations.getItems().size();
+        tableReservations.setPrefHeight(rowCount * 40 + 30);
+        tableReservations.setMinHeight(rowCount * 40 + 30);
+        tableReservations.setMaxHeight(rowCount * 40 + 30);
+        tableReservations.refresh();
         lblPagina.setText("Pagina " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
@@ -120,7 +124,16 @@ public class ReservationController {
             FormReservationController controller = loader.getController();
             controller.initData(currentUser, null);
             Stage stage = (Stage) tableReservations.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Reserva");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -133,7 +146,16 @@ public class ReservationController {
             FormReservationController controller = loader.getController();
             controller.initData(currentUser, reservation);
             Stage stage = (Stage) tableReservations.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Reserva");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -159,7 +181,16 @@ public class ReservationController {
             DashboardController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) tableReservations.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Panel de administración");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }

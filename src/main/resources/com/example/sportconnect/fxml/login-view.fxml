@@ -43,4 +43,7 @@
 
     <Label fx:id="lblMessage" styleClass="error-label" wrapText="true" />
 
+    <Button maxWidth="Infinity" onAction="#handleRegister"
+            text="¿No tienes cuenta? Regístrate" styleClass="link-button"/>
+
 </VBox>

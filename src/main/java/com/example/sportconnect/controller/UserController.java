@@ -45,7 +45,6 @@ public class UserController {
 
     private void setupColumns() {
         tableUsers.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableUsers.setPrefHeight(5 * 40 + 30);
 
         colId.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getId().toString()));
@@ -98,6 +97,11 @@ public class UserController {
         int from = currentPage * PAGE_SIZE;
         int to   = Math.min(from + PAGE_SIZE, allUsers.size());
         tableUsers.setItems(FXCollections.observableArrayList(allUsers.subList(from, to)));
+        int rowCount = tableUsers.getItems().size();
+        tableUsers.setPrefHeight(rowCount * 40 + 30);
+        tableUsers.setMinHeight(rowCount * 40 + 30);
+        tableUsers.setMaxHeight(rowCount * 40 + 30);
+        tableUsers.refresh();
         lblPagina.setText("Pagina " + (currentPage + 1) + " de " + totalPages);
         btnAnterior.setDisable(currentPage == 0);
         btnSiguiente.setDisable(currentPage >= totalPages - 1);
@@ -118,7 +122,16 @@ public class UserController {
             FormUserController controller = loader.getController();
             controller.initData(currentUser, null);
             Stage stage = (Stage) tableUsers.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Usuario");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -131,7 +144,16 @@ public class UserController {
             FormUserController controller = loader.getController();
             controller.initData(currentUser, user);
             Stage stage = (Stage) tableUsers.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Editar Usuario");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -157,7 +179,16 @@ public class UserController {
             DashboardController controller = loader.getController();
             controller.initData(currentUser);
             Stage stage = (Stage) tableUsers.getScene().getWindow();
+            double x = stage.getX();
+            double y = stage.getY();
+            double w = stage.getWidth();
+            double h = stage.getHeight();
             stage.setScene(new Scene(root));
+            stage.setTitle("SPORTCONNECT - Panel de administración");
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(w);
+            stage.setHeight(h);
             stage.show();
         } catch (Exception e) { e.printStackTrace(); }
     }
